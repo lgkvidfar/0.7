@@ -5,7 +5,7 @@
     "scripts": {
         "git:reg": "git add . && git commit -m git_small_regular_update && git push -u origin main",
         "server:dev": "ts-node-dev --poll --respawn -r tsconfig-paths/register server/index.ts",
-        "client:dev": "parcel client/src/index.html"
+        "client:dev": "parcel client/index.html"
     },
     "dependencies": {
         "axios": "^0.25.0",
