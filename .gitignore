@@ -1,0 +1,9 @@
+node_modules
+.terraform
+.env
+.DS_Store
+.cache/
+dist/
+coverage/
+.vscode/
+.parcel-cache
