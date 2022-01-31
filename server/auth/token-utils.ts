@@ -68,14 +68,12 @@ export const setTokens = (res: Response, access: string, refresh?: string) => {
 };
 
 export const verifyAccessToken = (token: string) => {
-    console.log('made it here');
-
-    const verifiedAccess = jwt.verify(token, accessTokenSecret);
-
-    console.log('this is verified normal', verifiedAccess);
-    console.log('this is verified as IAscessToken', verifiedAccess as IAccessToken);
-
-    return verifiedAccess as IRefreshToken;
+    try {
+        const verifiedAccess = jwt.verify(token, accessTokenSecret);
+        return verifiedAccess as IRefreshToken;
+    } catch (e) {
+        console.log('blah');
+    }
 };
 
 export const verifyRefreshToken = (token: string) => {
@@ -87,6 +85,8 @@ export const verifyRefreshToken = (token: string) => {
 };
 
 export const refreshTokens = (current: IRefreshToken, tokenVersion: number) => {
+    console.log('we are now trying to refresh tokens');
+
     if (tokenVersion !== current.version) {
         console.log('token revoked, version did not match');
         throw 'token revoked, version did not match';

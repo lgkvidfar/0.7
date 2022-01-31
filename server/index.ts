@@ -2,7 +2,8 @@ import { Cookies } from '@interfaces';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Response } from 'express';
-import { authMiddleWare } from './auth/auth-middleware';
+import { nextTick } from 'process';
+import { authAdmin, authMiddleWare } from './auth/auth-middleware';
 import { getGitHubUser } from './auth/github-auth';
 import {
     buildTokens,
@@ -25,10 +26,11 @@ const app = express();
 app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
+app.get('/', (req, res, next) => {
     console.log('api is healthy');
 
     res.json({ message: 'api is healthy' });
+    next();
 });
 
 app.get('/github', async (req, res) => {
@@ -93,8 +95,14 @@ app.post('/logout-all', authMiddleWare, async (req, res: Response) => {
     res.end();
 });
 
-app.get('/me', authMiddleWare, async (req, res) => {
+app.get('/me', authMiddleWare, authAdmin, async (req, res) => {
+    console.log('then: getME');
+
     const user = await getUserById(res.locals.token.userId);
+    const token = res.locals.token;
+
+    console.log('this is the currently authenticated token', token);
+
     console.log('this is the currently authenticated user', user);
     res.json(user);
 });
