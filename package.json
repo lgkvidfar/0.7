@@ -4,7 +4,8 @@
     "main": "index.js",
     "scripts": {
         "git:reg": "git add . && git commit -m git_small_regular_update && git push -u origin main",
-        "server:dev": "ts-node-dev --poll --respawn -r tsconfig-paths/register server/index.ts"
+        "server:dev": "ts-node-dev --poll --respawn -r tsconfig-paths/register server/index.ts",
+        "client:dev": "parcel client/src/index.html"
     },
     "dependencies": {
         "axios": "^0.25.0",
@@ -15,7 +16,9 @@
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.1.8",
         "ts-node": "^10.4.0",
-        "uuid": "^8.3.2"
+        "uuid": "^8.3.2",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",
@@ -27,7 +30,9 @@
         "@types/uuid": "^8.3.4",
         "ts-node-dev": "^1.1.8",
         "tsconfig-paths": "^3.12.0",
-        "typescript": "^4.5.5"
+        "typescript": "^4.5.5",
+        "@types/react-dom": "^17.0.11",
+        "parcel": "^2.2.1"
     },
     "keywords": [],
     "author": "",
