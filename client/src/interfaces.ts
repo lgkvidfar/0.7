@@ -1,7 +1,7 @@
 export interface IBasicUser {
     name: string;
     tokenVersion: number;
-    alive: Boolean;
+    alive: Boolean | null;
 
     email: string | null;
 

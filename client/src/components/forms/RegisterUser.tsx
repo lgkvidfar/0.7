@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/userServices";
 
 const RegisterForm = () => {
@@ -7,7 +6,6 @@ const RegisterForm = () => {
     const [password, setPassword] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
-    const navigate = useNavigate();
 
     const handleRegister = (event: { preventDefault: () => void }) => {
         event.preventDefault();
@@ -21,7 +19,7 @@ const RegisterForm = () => {
                 gitHubLogin: null,
                 gitHubId: null,
                 tokenVersion: 0,
-                alive: true,
+                alive: null,
                 email: email,
                 username: username,
                 password: password,
@@ -31,10 +29,10 @@ const RegisterForm = () => {
                 cart: null,
             })
                 .then((response: { message: any }) => {
-                    console.log(`response from backend: ${response.message}`, response);
+                    console.log(`response from backend:`, response);
                 })
                 .catch(err => {
-                    console.log("something went wrong with login", err);
+                    console.log("something went wrong with registering", err);
                 });
             setUsername("");
             setPassword("");
@@ -54,6 +52,7 @@ const RegisterForm = () => {
                     name="Username"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
+                    required={true}
                 />
                 <br />
                 <input
@@ -61,6 +60,7 @@ const RegisterForm = () => {
                     name="Password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
+                    required={true}
                 />
                 <br />
                 <input
@@ -68,6 +68,7 @@ const RegisterForm = () => {
                     name="Name"
                     value={name}
                     onChange={e => setName(e.target.value)}
+                    required={true}
                 />
                 <br />
                 <input
@@ -75,6 +76,7 @@ const RegisterForm = () => {
                     name="Email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
+                    required={true}
                 />
                 <br />
                 <button type="submit">register</button>

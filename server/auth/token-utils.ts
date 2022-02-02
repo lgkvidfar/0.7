@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 import {
     IBasicUser,
@@ -7,32 +7,43 @@ import {
     Cookies,
     IRefreshToken,
     IAccessToken,
-} from '@interfaces';
-import { cookie, tokens } from 'server/config';
-import { CookieOptions, Response } from 'express';
+} from "@interfaces";
+import { cookie, tokens } from "server/config";
+import { CookieOptions, Response } from "express";
 
 const accessTokenSecret = tokens.secret.access;
 const refreshTokenSecret = tokens.secret.refresh;
 
 const signAccessToken = (payload: IAccessTokenPayload) => {
-    const signedAccessToken = jwt.sign(payload, accessTokenSecret, {
-        expiresIn: tokens.expiration.access,
-    });
+    try {
+        const signedAccessToken = jwt.sign(payload, accessTokenSecret, {
+            expiresIn: tokens.expiration.access,
+        });
 
-    return signedAccessToken;
+        return signedAccessToken;
+    } catch (e) {
+        console.log("could not signAccessToken @ token.util", e);
+    }
 };
 
 const signRefreshToken = (payload: IRefreshTokenPayload) => {
-    const signedRefreshToken = jwt.sign(payload, refreshTokenSecret, {
-        expiresIn: tokens.expiration.refresh,
-    });
+    try {
+        const signedRefreshToken = jwt.sign(payload, refreshTokenSecret, {
+            expiresIn: tokens.expiration.refresh,
+        });
 
-    return signedRefreshToken;
+        return signedRefreshToken;
+    } catch (e) {
+        console.log("could not sign refresh token", e);
+    }
 };
 
 export const buildTokens = (user: IBasicUser) => {
     const accessPayload: IAccessTokenPayload = { userId: user.id };
-    const refreshPayload: IRefreshTokenPayload = { userId: user.id, version: user.tokenVersion };
+    const refreshPayload: IRefreshTokenPayload = {
+        userId: user.id,
+        version: user.tokenVersion,
+    };
 
     const accessToken = signAccessToken(accessPayload);
     const refreshToken = refreshPayload && signRefreshToken(refreshPayload);
@@ -40,14 +51,14 @@ export const buildTokens = (user: IBasicUser) => {
     return { accessToken, refreshToken };
 };
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 
 const defaultCookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: isProduction ? "strict" : "lax",
     domain: cookie.base_domain,
-    path: '/',
+    path: "/",
 };
 
 const accessTokenCookieOptions: CookieOptions = {
@@ -60,40 +71,38 @@ const refreshTokenCookieOptions: CookieOptions = {
     maxAge: tokens.expiration.refresh * 1000,
 };
 
-export const setTokens = (res: Response, access: string, refresh?: string) => {
+export function setTokens(res: Response, access: string, refresh?: string) {
     res.cookie(Cookies.AccessToken, access, accessTokenCookieOptions);
-    if (refresh) {
-        res.cookie(Cookies.RefreshToken, refresh, refreshTokenCookieOptions);
-    }
-};
+    if (refresh) res.cookie(Cookies.RefreshToken, refresh, refreshTokenCookieOptions);
+}
 
 export const verifyAccessToken = (token: string) => {
     try {
         const verifiedAccess = jwt.verify(token, accessTokenSecret);
         return verifiedAccess as IRefreshToken;
     } catch (e) {
-        console.log('error in verifying access token', e);
+        console.log("error in verifying access token", e);
     }
 };
 
 export const verifyRefreshToken = (token: string) => {
     try {
         const verifiedRefresh = jwt.verify(token, refreshTokenSecret);
-        console.log('this is verifiedRefresh normal', verifiedRefresh);
-        console.log('this is verifiedRefresh as RefreshToken', verifiedRefresh as IRefreshToken);
+        console.log("this is verifiedRefresh normal", verifiedRefresh);
+        console.log("this is verifiedRefresh as RefreshToken", verifiedRefresh as IRefreshToken);
 
         return verifiedRefresh as IRefreshToken;
     } catch (e) {
-        console.log('error in verifying refresh token', e);
+        console.log("error in verifying refresh token", e);
     }
 };
 
 export const refreshTokens = (current: IRefreshToken, tokenVersion: number) => {
-    console.log('we are now trying to refresh tokens');
+    console.log("we are now trying to refresh tokens");
 
     if (tokenVersion !== current.version) {
-        console.log('token revoked, version did not match');
-        throw 'token revoked, version did not match';
+        console.log("token revoked, version did not match");
+        throw "token revoked, version did not match";
     }
     const accessPayload: IAccessTokenPayload = { userId: current.userId };
     const refreshedAccessToken = signAccessToken(accessPayload);
@@ -112,6 +121,10 @@ export const refreshTokens = (current: IRefreshToken, tokenVersion: number) => {
 };
 
 export const clearTokens = (res: Response) => {
-    res.cookie(Cookies.AccessToken, '', { ...defaultCookieOptions, maxAge: 0 });
-    res.cookie(Cookies.RefreshToken, '', { ...defaultCookieOptions, maxAge: 0 });
+    try {
+        res.cookie(Cookies.AccessToken, "", { ...defaultCookieOptions, maxAge: 0 });
+        res.cookie(Cookies.RefreshToken, "", { ...defaultCookieOptions, maxAge: 0 });
+    } catch (e) {
+        console.log("could not cleartokens @ token-utils", e);
+    }
 };

@@ -7,9 +7,9 @@ export const registerUser = async (req: Request, res: Response) => {
     console.log("body", body);
 
     const user = await createUser({ ...body });
-
+    if (!user) return res.status(400).send("unauth");
     const { accessToken, refreshToken } = buildTokens(user);
-    setTokens(res, accessToken, refreshToken);
+    if (accessToken) setTokens(res, accessToken, refreshToken);
 
     res.redirect(`${process.env.CLIENT_URL}/me`);
 };

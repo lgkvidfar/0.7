@@ -33,13 +33,6 @@ app.use(
     })
 );
 
-app.use("/", (req, res, next) => {
-    console.log("api is healthy");
-
-    res.json({ message: "api is healthy" });
-    next();
-});
-
 app.use("/register", userRouter);
 
 app.use("/github", async (req, res) => {
@@ -48,6 +41,7 @@ app.use("/github", async (req, res) => {
     const { code } = req.query;
 
     const gitHubUser = await getGitHubUser(code as string);
+    if (!gitHubUser) return res.status(400).send("unauth");
     let user = await getUserByGitHubId(gitHubUser.id);
     if (!user) {
         console.log("creating user from github user:", gitHubUser);
@@ -71,6 +65,7 @@ app.use("/github", async (req, res) => {
     }
 
     const { accessToken, refreshToken } = buildTokens(user);
+    if (!accessToken) throw "no access";
     setTokens(res, accessToken, refreshToken);
 
     res.redirect(`${process.env.CLIENT_URL}/me`);
@@ -88,34 +83,48 @@ app.use("/refresh", async (req, res) => {
             current,
             user.tokenVersion
         );
-        setTokens(res, refreshedAccessToken, refreshedRefreshToken);
+        if (refreshedAccessToken) {
+            setTokens(res, refreshedAccessToken, refreshedRefreshToken);
+        }
     } catch (e) {
         console.log("error in server/index @ post(refresh)", e);
         clearTokens(res);
     }
-    res.end();
 });
 
 app.use("/logout", (req, res) => {
     clearTokens(res);
-    res.end();
 });
 
 app.use("/logout-all", async (req, res: Response) => {
     await increaseTokenVersion(res.locals.token.userId);
     clearTokens(res);
-    res.end();
 });
 
-app.use("/me", async (req, res) => {
-    console.log("this is res.locals", res.locals);
+// app.get("/me", async (req, res) => {
+//     console.log("this is res.locals", res.locals);
+//     if (res.locals.token) {
+//         // const user = await getUserById(res.locals.token.userId);
 
-    const user = await getUserById(res.locals.token.userId);
+//         console.log("this is res.locals again", res.locals);
+//         // console.log("this is the currently authenticated user", user);
 
-    console.log("this is res.locals", res.locals);
-    console.log("this is the currently authenticated user", user);
+//         // res.json(user);
+//     } else {
+//         return res.status(400).send("unauth");
+//     }
+// });
 
-    res.json(user);
+app.use("/", (req, res, next) => {
+    console.log("api is healthy");
+
+    res.json({ message: "api is healthy" });
+});
+
+app.use("/:anythingelse", (req, res, next) => {
+    console.log("404: no page here");
+
+    res.json({ message: "no page here" });
 });
 
 connectToMongoDB()
