@@ -1,6 +1,6 @@
-import { v4 as uuid } from 'uuid';
-import { IBasicUser } from '@interfaces';
-import UserModel from 'server/models/UserModel';
+import { v4 as uuid } from "uuid";
+import { IBasicUser } from "@interfaces";
+import UserModel from "server/models/UserModel";
 
 interface ICreateUser {
     name: string | null;
@@ -23,14 +23,14 @@ interface ICreateUser {
 }
 
 export const createUser = async (props: ICreateUser) => {
-    console.log('creating user form props:', props);
+    console.log("creating user from props:", props);
 
     const user: IBasicUser = {
-        name: props.name || 'j.d',
+        name: props.name || "j.d",
         tokenVersion: 0,
         alive: true,
         email: props.email || null,
-        username: props.username || 'anon',
+        username: props.username || "anon",
         password: props.password || null,
 
         id: uuid(),
@@ -48,11 +48,11 @@ export const createUser = async (props: ICreateUser) => {
         },
     };
 
-    console.log('created user: ', user);
+    console.log("created user: ", user);
 
     const savedUser = new UserModel(user);
     await savedUser.save();
-    console.log('savedUser: ', savedUser);
+    console.log("savedUser: ", savedUser);
 
     return savedUser;
 };
@@ -68,12 +68,12 @@ export const getUserById = async (id: string) => {
         const user = UserModel.findOne({ id });
         return user;
     } catch (e) {
-        throw new Error('no user found');
+        throw new Error("no user found");
     }
 };
 
 export const increaseTokenVersion = async (id: string) => {
     const result = await UserModel.findByIdAndUpdate({ id }, { $inc: { tokenVersion: 1 } });
-    console.log('this is the result of tokenversion update', result);
+    console.log("this is the result of tokenversion update", result);
     return result;
 };
