@@ -4,7 +4,7 @@ import { Cookies } from '@interfaces';
 import { verifyAccessToken } from '../auth/token-utils';
 
 export const authMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
-    console.log('first: authmiddleware');
+    console.log('in authmiddleware');
 
     const verifiedAccessToken = verifyAccessToken(req.cookies[Cookies.AccessToken]);
 

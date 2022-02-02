@@ -67,6 +67,7 @@ app.get('/github', async (req, res) => {
 app.post('/refresh', async (req, res) => {
     try {
         const current = verifyRefreshToken(req.cookies[Cookies.RefreshToken]);
+        if (!current) throw 'current refresh token not found';
         console.log('this is current in server/index @ post(refresh): ', current);
         const user = await getUserById(current.userId);
         if (!user) throw 'user not found';

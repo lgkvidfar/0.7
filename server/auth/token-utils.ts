@@ -77,11 +77,15 @@ export const verifyAccessToken = (token: string) => {
 };
 
 export const verifyRefreshToken = (token: string) => {
-    const verifiedRefresh = jwt.verify(token, refreshTokenSecret);
-    console.log('this is verifiedRefresh normal', verifiedRefresh);
-    console.log('this is verifiedRefresh as RefreshToken', verifiedRefresh as IRefreshToken);
+    try {
+        const verifiedRefresh = jwt.verify(token, refreshTokenSecret);
+        console.log('this is verifiedRefresh normal', verifiedRefresh);
+        console.log('this is verifiedRefresh as RefreshToken', verifiedRefresh as IRefreshToken);
 
-    return verifiedRefresh as IRefreshToken;
+        return verifiedRefresh as IRefreshToken;
+    } catch (e) {
+        console.log('error in verifying refresh token', e);
+    }
 };
 
 export const refreshTokens = (current: IRefreshToken, tokenVersion: number) => {
