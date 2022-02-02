@@ -11,7 +11,7 @@ export const schema = new Schema<IBasicUser>(
 
         tokenVersion: { type: Number, required: true },
 
-        cart: { type: Object, required: false },
+        cart: { type: {}, required: true },
 
         id: { type: String, required: true },
         sellerID: { type: String, required: false },

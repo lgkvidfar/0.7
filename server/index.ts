@@ -2,8 +2,7 @@ import { Cookies } from '@interfaces';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Response } from 'express';
-import { nextTick } from 'process';
-import { authAdmin, authMiddleWare } from './auth/auth-middleware';
+import { authAdmin, authMiddleWare } from './middlewares/auth-middleware';
 import { getGitHubUser } from './auth/github-auth';
 import {
     buildTokens,
@@ -95,15 +94,14 @@ app.post('/logout-all', authMiddleWare, async (req, res: Response) => {
     res.end();
 });
 
-app.get('/me', authMiddleWare, authAdmin, async (req, res) => {
-    console.log('then: getME');
+app.get('/me', authMiddleWare, async (req, res) => {
+    console.log('this is res.locals', res.locals);
 
     const user = await getUserById(res.locals.token.userId);
-    const token = res.locals.token;
 
-    console.log('this is the currently authenticated token', token);
-
+    console.log('this is res.locals', res.locals);
     console.log('this is the currently authenticated user', user);
+
     res.json(user);
 });
 

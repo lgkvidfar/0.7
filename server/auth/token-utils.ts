@@ -72,7 +72,7 @@ export const verifyAccessToken = (token: string) => {
         const verifiedAccess = jwt.verify(token, accessTokenSecret);
         return verifiedAccess as IRefreshToken;
     } catch (e) {
-        console.log('blah');
+        console.log('error in verifying access token', e);
     }
 };
 

@@ -41,13 +41,14 @@ export const createUser = async (props: ICreateUser) => {
         gitHubLogin: props.gitHubLogin || null,
 
         cart: {
+            id: uuid(),
             cart: [],
             total: 0,
             alive: false,
         },
     };
 
-    console.log('created suer: ', user);
+    console.log('created user: ', user);
 
     const savedUser = new UserModel(user);
     await savedUser.save();
@@ -63,8 +64,12 @@ export const getUserByGitHubId = async (gitHubId: number) => {
 };
 
 export const getUserById = async (id: string) => {
-    const user = UserModel.findOne({ id });
-    return user;
+    try {
+        const user = UserModel.findOne({ id });
+        return user;
+    } catch (e) {
+        throw new Error('no user found');
+    }
 };
 
 export const increaseTokenVersion = async (id: string) => {

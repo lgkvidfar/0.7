@@ -15,10 +15,11 @@ export interface IBasicUser {
     gitHubId: string | null;
     gitHubLogin: string | null;
 
-    cart: ICart;
+    cart: ICart | null;
 }
 
 export interface ICart {
+    id: string;
     alive: Boolean;
     cart: IProductsInCart[];
     total: number;
