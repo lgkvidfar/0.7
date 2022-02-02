@@ -1,7 +1,7 @@
 export interface IBasicUser {
     name: string;
     tokenVersion: number;
-    alive: Boolean;
+    alive: Boolean | null;
 
     email: string | null;
 
@@ -57,6 +57,11 @@ export interface IRefreshToken extends IRefreshTokenPayload {
 }
 
 export enum Cookies {
-    AccessToken = 'access',
-    RefreshToken = 'refresh',
+    AccessToken = "access",
+    RefreshToken = "refresh",
+}
+
+export interface ILoginCredentials {
+    username: string;
+    password: string;
 }

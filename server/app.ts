@@ -20,7 +20,8 @@ import {
     getUserById,
     increaseTokenVersion,
 } from "./services/user-service";
-import userRouter from "./routers/userRouter";
+import registerRouter from "./routers/registerRouter";
+import loginRouter from "./routers/loginRouter";
 
 const app = express();
 
@@ -33,7 +34,8 @@ app.use(
     })
 );
 
-app.use("/register", userRouter);
+app.use("/register", registerRouter);
+app.use("/login", loginRouter);
 
 app.use("/github", async (req, res) => {
     console.log("im in github");
@@ -115,11 +117,11 @@ app.use("/logout-all", async (req, res: Response) => {
 //     }
 // });
 
-app.use("/", (req, res, next) => {
-    console.log("api is healthy");
+// app.use("/", (req, res, next) => {
+//     console.log("api is healthy, you've reached home");
 
-    res.json({ message: "api is healthy" });
-});
+//     res.json({ message: "api is healthy,  you've reached home" });
+// });
 
 app.use("/:anythingelse", (req, res, next) => {
     console.log("404: no page here");

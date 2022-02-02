@@ -60,3 +60,8 @@ export enum Cookies {
     AccessToken = "access",
     RefreshToken = "refresh",
 }
+
+export interface ILoginCredentials {
+    username: string;
+    password: string;
+}

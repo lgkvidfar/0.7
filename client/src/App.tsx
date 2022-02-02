@@ -2,17 +2,20 @@ import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import RegisterForm from "./components/forms/RegisterUser";
 import RegisterPage from "./pages/RegisterPage";
+import LoginForm from "./components/forms/LoginUser";
+import LoginPage from "./pages/LoginPage";
 
 const App = () => {
     return (
         <div>
             <h3>this is app</h3>
-
-            <Link to="/register">register</Link>
-
+            <Link to="/register">register</Link> {` | `}
+            <Link to="/login">login</Link>
             <Routes>
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="register/user" element={<RegisterForm />} />
+                <Route path="/register/user" element={<RegisterForm />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/login/user" element={<LoginForm />} />
             </Routes>
         </div>
     );
