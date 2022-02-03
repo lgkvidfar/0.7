@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Response } from "express";
-import { authAdmin, authMiddleWare } from "./middlewares/auth-middleware";
+import { authMiddleWare } from "./middlewares/auth-middleware";
 import { getGitHubUser } from "./auth/github-auth";
 import {
     buildTokens,
@@ -12,7 +12,6 @@ import {
     setTokens,
     verifyRefreshToken,
 } from "./auth/token-utils";
-import { server } from "./config";
 import connectToMongoDB from "./database/connect";
 import {
     createUser,
@@ -35,7 +34,7 @@ app.use(
     })
 );
 
-app.use("/register", authMiddleWare, registerRouter);
+app.use("/register", registerRouter);
 
 app.use("/login", loginRouter);
 

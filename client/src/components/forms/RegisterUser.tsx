@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { registerUser } from "../../services/userServices";
+import { uniqueNamesGenerator, adjectives, colors, animals, Config } from "unique-names-generator";
+
+const customConfig: Config = {
+    dictionaries: [adjectives, colors, animals],
+    separator: "-",
+    length: 3,
+};
 
 const RegisterForm = () => {
     const [username, setUsername] = useState<string>("");
@@ -19,13 +26,13 @@ const RegisterForm = () => {
             password: ${password}
             `);
             registerUser({
-                name: name,
+                name: name || "anon",
                 gitHubLogin: null,
                 gitHubId: null,
                 tokenVersion: 0,
                 alive: null,
                 email: email,
-                username: username,
+                username: username || uniqueNamesGenerator(customConfig),
                 password: password,
                 id: uuid(),
                 sellerID: null,
@@ -57,7 +64,6 @@ const RegisterForm = () => {
                     name="Username"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
-                    required={true}
                 />
                 <br />
                 <input
@@ -73,7 +79,6 @@ const RegisterForm = () => {
                     name="Name"
                     value={name}
                     onChange={e => setName(e.target.value)}
-                    required={true}
                 />
                 <br />
                 <input

@@ -23,10 +23,8 @@ interface ICreateUser {
 }
 
 export const createUser = async (props: ICreateUser) => {
-    console.log("creating user from props:", props);
-
     const user: IBasicUser = {
-        name: props.name || "j.d",
+        name: props.name || "anon",
         tokenVersion: 0,
         alive: true,
         email: props.email || null,
