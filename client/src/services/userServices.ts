@@ -20,20 +20,12 @@ export const registerUser = async (user: IBasicUser) => {
 };
 
 export const loginUser = async (loginCreds: ILoginCredentials) => {
-    console.log("this will be sent to backend, loginCreds:", loginCreds);
+    try {
+        console.log("this will be sent to backend, loginCreds:", loginCreds);
 
-    const response = await axios
-        .post(`${baseUrl}/login/user`, loginCreds)
-        .then(res => {
-            console.log("this is the response", res);
-
-            return res;
-        })
-        .catch(error => {
-            console.log("this is the catch", error);
-            return error.status(400).JSON({
-                message: "didnt go well",
-            });
-        });
-    return response;
+        const response = await axios.post(`/login/user`, loginCreds);
+        return response;
+    } catch (e) {
+        console.log("this is the catch", e);
+    }
 };

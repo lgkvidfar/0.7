@@ -74,6 +74,9 @@ const refreshTokenCookieOptions: CookieOptions = {
 export function setTokens(res: Response, access: string, refresh?: string) {
     res.cookie(Cookies.AccessToken, access, accessTokenCookieOptions);
     if (refresh) res.cookie(Cookies.RefreshToken, refresh, refreshTokenCookieOptions);
+    console.log("this is res.cookie", res.cookie);
+
+    return res;
 }
 
 export const verifyAccessToken = (token: string) => {

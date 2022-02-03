@@ -22,7 +22,8 @@ import {
 } from "./services/user-service";
 import registerRouter from "./routers/registerRouter";
 import loginRouter from "./routers/loginRouter";
-
+import secretRouter from "./routers/secretRouter";
+import { verifyStoredUser } from "./middlewares/authUser";
 const app = express();
 
 app.use(cors());
@@ -34,10 +35,15 @@ app.use(
     })
 );
 
-app.use("/register", registerRouter);
+app.use("/register", authMiddleWare, registerRouter);
+
 app.use("/login", loginRouter);
 
+app.use("/secret", verifyStoredUser, secretRouter);
+
 app.use("/github", async (req, res) => {
+    console.log("this is cookies", req.cookies[Cookies.RefreshToken]);
+
     console.log("im in github");
 
     const { code } = req.query;
@@ -117,13 +123,13 @@ app.use("/logout-all", async (req, res: Response) => {
 //     }
 // });
 
-// app.use("/", (req, res, next) => {
-//     console.log("api is healthy, you've reached home");
+app.use("/", (req, res, next) => {
+    console.log("api is healthy, you've reached home");
 
-//     res.json({ message: "api is healthy,  you've reached home" });
-// });
+    res.json({ message: "api is healthy,  you've reached home" });
+});
 
-app.use("/:anythingelse", (req, res, next) => {
+app.get("/:anythingelse", (req, res, next) => {
     console.log("404: no page here");
 
     res.json({ message: "no page here" });

@@ -1,35 +1,27 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/userServices";
 
 const LoginUser = () => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const navigate = useNavigate();
-
-    const handleLogin = (event: { preventDefault: () => void }) => {
+    const handleLogin = async (event: { preventDefault: () => void }) => {
         event.preventDefault();
         try {
             console.log(`sending payload to backend:
             username: ${username}
             password: ${password}
             `);
-            loginUser({
+            const response = await loginUser({
                 username: username,
                 password: password,
-            })
-                .then(response => {
-                    console.log(`response from backend:`, response);
-                    navigate("/errrrrrroror");
-                })
-                .catch(err => {
-                    console.log("something went wrong with registering", err);
-                });
+            });
+            console.log(response && response.data.message);
             setUsername("");
             setPassword("");
+            //navigate heree to profile
         } catch (err) {
-            console.log(err);
+            console.log("something went wrong with logging in", err);
         }
     };
 
