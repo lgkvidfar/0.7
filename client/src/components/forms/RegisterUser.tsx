@@ -18,14 +18,14 @@ const RegisterForm = () => {
 
     const navigate = useNavigate();
 
-    const handleRegister = (event: { preventDefault: () => void }) => {
+    const handleRegister = async (event: { preventDefault: () => void }) => {
         event.preventDefault();
         try {
             console.log(`sending payload to backend:
             username: ${username}
             password: ${password}
             `);
-            registerUser({
+            const response = await registerUser({
                 name: name || "anon",
                 gitHubLogin: null,
                 gitHubId: null,
@@ -38,14 +38,11 @@ const RegisterForm = () => {
                 sellerID: null,
                 adminID: null,
                 cart: null,
-            })
-                .then((response: { message: any }) => {
-                    console.log(`response from backend:`, response);
-                    navigate("/login/user");
-                })
-                .catch(err => {
-                    console.log("something went wrong with registering", err);
-                });
+            });
+
+            console.log(`response from backend:`, response);
+
+            if (response && response.status === 200) navigate("/login/user");
             setUsername("");
             setPassword("");
             setEmail("");

@@ -46,11 +46,8 @@ export const createUser = async (props: ICreateUser) => {
         },
     };
 
-    console.log("created user: ", user, "done");
-
-    const savedUser = new UserModel(user);
-    await savedUser.save();
-    console.log("savedUser: ", savedUser);
+    const newUser = new UserModel(user);
+    const savedUser = await newUser.save();
 
     return savedUser;
 };

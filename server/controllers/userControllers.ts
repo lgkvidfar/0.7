@@ -1,20 +1,30 @@
 import { Cookies, IBasicUser } from "@interfaces";
 import { NextFunction, Request, Response } from "express";
-import { endianness } from "os";
-import { nextTick } from "process";
 import { buildTokens, setTokens } from "server/auth/token-utils";
 import UserModel from "server/models/UserModel";
 import { createUser } from "server/services/user-service";
 
 export const registerUser = async (req: Request, res: Response) => {
     const body = req.body;
+    console.log(body);
+
+    const duplicateEmail = await UserModel.findOne({ email: body.email });
+    const duplicateUsername = await UserModel.findOne({ username: body.username });
+    console.log("this is duplicate email", duplicateEmail);
+    console.log("this is duplicate username", duplicateUsername);
+
+    if (duplicateEmail || duplicateUsername) {
+        return res.status(409).json({ message: "username or email is already in database" });
+    }
 
     const user = await createUser({ ...body });
     if (!user) return res.status(424).json({ message: "unable to create user" });
     const { accessToken, refreshToken } = buildTokens(user);
     if (accessToken) setTokens(res, accessToken, refreshToken);
 
-    res.redirect(`${process.env.CLIENT_URL}/me`);
+    console.log("ending");
+
+    res.end();
 };
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {

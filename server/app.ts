@@ -3,7 +3,6 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Response } from "express";
-import { authMiddleWare } from "./middlewares/auth-middleware";
 import { getGitHubUser } from "./auth/github-auth";
 import {
     buildTokens,
@@ -35,6 +34,7 @@ app.use(
 );
 
 app.use("/register", registerRouter);
+console.log("not here");
 
 app.use("/login", loginRouter);
 
